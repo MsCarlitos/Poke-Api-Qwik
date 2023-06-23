@@ -1,31 +1,36 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, useComputed$, useSignal, useTask$ } from "@builder.io/qwik";
 
 interface Props {
-    id: number;
+    id: number | string;
     size: number;
     backImage?: boolean;
     isVisible?: boolean;
 }
 
-export const PokemonImage = component$(( { id, size, backImage = false, isVisible=false }:Props ) => {
+export const PokemonImage = component$(( { id, size = 250, backImage = false, isVisible=true }:Props ) => {
     const imageLoaded = useSignal<boolean>(false);
-    const urlFrontImage = useSignal<string>("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/");
-    const urlBackImage = useSignal<string>("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/");
 
     useTask$( ({ track }) => {
         track( () => id )
         imageLoaded.value = false;
     })
+
+    const imageUrl = useComputed$( () => {
+        return( backImage )
+            ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${ id }.png`
+            : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${ id }.png`
+    });
+
     return (
         <div class="flex items-center justify-center" style={{ width: `${size}px`, height:`${size}px` }}>
             { !imageLoaded.value && <span>Cargando...</span> }
-            <img src={`${ backImage ? urlBackImage.value : urlFrontImage.value }${ id }.png`}
+            <img src={ imageUrl.value }
                 alt='pokemon sprites'
                 style={{ width: `${size}px` }}
                 onLoad$={ () => imageLoaded.value = true}
                 class={{
                     "hidden": !imageLoaded.value,
-                    "brightness-0" : isVisible,
+                    "brightness-0" : !isVisible,
                     "transition-all": true
                 }}
             />
