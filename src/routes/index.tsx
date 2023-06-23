@@ -51,8 +51,6 @@ export default component$(() => {
   );
 });
 
-
-
 export const head: DocumentHead = {
   title: 'PokeQwik',
   meta: [

@@ -63,3 +63,7 @@ The production build will generate client and server modules by running both cli
 ```shell
 yarn build # or `yarn build`
 ```
+
+## Configuracion de ENVs
+
+Renombrar el archivo __.env.template__ a __.env__ y cambiar las variables de entorno.
