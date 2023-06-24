@@ -1,7 +1,7 @@
 import { Slot, component$, useContextProvider, useStore, useVisibleTask$ } from '@builder.io/qwik';
-import { PokemonGameContext, PokemonListContext } from '../';
-import { type PokemonListState, type PokemonGameState } from '../';
-import { json } from 'stream/consumers';
+import { type PokemonGameState, PokemonGameContext } from './pokemon-game.context';
+import { type PokemonListState, PokemonListContext } from './pokemon-list.context';
+
 
 export const PokemonProvider = component$(() => {
     const pokemonGame = useStore<PokemonGameState>({
@@ -11,7 +11,7 @@ export const PokemonProvider = component$(() => {
     });
 
     const pokemonList = useStore<PokemonListState>({
-        currentPage: 0,
+        currentPage: 1,
         isLoading: false,
         pokemons: [],
     });
@@ -19,7 +19,7 @@ export const PokemonProvider = component$(() => {
     useContextProvider(PokemonGameContext, pokemonGame);
     useContextProvider(PokemonListContext, pokemonList);
 
-    useVisibleTask$( ({track}) => {
+    useVisibleTask$( () => {
         if( localStorage.getItem('pokemon-game') ){
             const {
                 isPokemonVisible = true,
@@ -30,14 +30,13 @@ export const PokemonProvider = component$(() => {
             pokemonGame.pokemonId = pokemonId;
             pokemonGame.showBackImage = showBackImage;
         }
-        track( () => [ pokemonGame.isPokemonVisible, pokemonGame.pokemonId, pokemonGame.showBackImage ]);
-        localStorage.setItem('pokemon-game', JSON.stringify(pokemonGame));
     })
 
-    useVisibleTask$( ({track}) => {
+    useVisibleTask$(({ track }) => {
         track( () => [ pokemonGame.isPokemonVisible, pokemonGame.pokemonId, pokemonGame.showBackImage ]);
-        localStorage.setItem('pokemon-game', JSON.stringify(pokemonGame));
-    })
+        localStorage.setItem('pokemon-game', JSON.stringify( pokemonGame ));
+    });
+
 
     return (<Slot />);
 });
