@@ -14,6 +14,12 @@ export default component$(() => {
         </div>
         <ul>
           <li>
+            <Link href='/login/' >Login </Link>
+          </li>
+          <li>
+            <Link href='/dashboard/' >Admin dashboard </Link>
+          </li>
+          <li>
             <Link href='/counter/' >Counter Hook </Link>
           </li>
           <li>
